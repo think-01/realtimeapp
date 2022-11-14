@@ -1,0 +1,15 @@
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } }
+
+type User @model {
+    id: ID!
+    name: String!
+    messages: [Message] @hasMany(indexName: "byUser", fields: ["id"])
+    room: String @function(name: "SayMyName")
+}
+
+type Message @model {
+    id: ID!
+    userId: ID! @index(name: "byUser")
+    user: User @hasOne(fields: ["userId"])
+    content: String!
+}

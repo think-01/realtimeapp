@@ -1,28 +1,33 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <ul>
+    <li :key="user.id" v-for="user in users">{{user.room}}: {{user.name}}</li>
+  </ul>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { API } from "aws-amplify";
+import { listUsers } from "./graphql/queries";
+//import {createUser} from "@/graphql/mutations";
+//import { onCreateUser } from "./graphql/subscriptions";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      users: []
+    }
+  },
+  async created() {
+    /*
+    await API.graphql({
+      query: createUser,
+      variables: { input: {name: 'Heisenberg'} },
+    });
+    */
+
+    API.graphql({
+      query: listUsers,
+    }).then(usersRes => this.users = usersRes.data.listUsers.items)
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<style></style>
